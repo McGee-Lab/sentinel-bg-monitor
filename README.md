@@ -109,13 +109,13 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 
 ---
 
-### Touch Controller (SPI)
+### Touch Controller (SPI) (Currently not wired/not being used)
 | ESP32 Pin | Touch Pin | Function | Wire Color |
 |---------|-----------|---------|-----------|
-| GPIO 18 | CLK | SPI Clock | Yellow |
-| GPIO 19 | DO | Data Out | Green |
-| GPIO 23 | DIN | Data In | Blue |
-| GPIO 33 | CS | Chip Select | Brown |
+| GPIO 18 | TOUCH_CLK | SPI Clock | Yellow |
+| GPIO 19 | TOUCH_DO | Data Out | Green |
+| GPIO 23 | TOUCH_DIN | Data In | Blue |
+| GPIO 33 | TOUCH_CS | Chip Select | Brown |
 | — | IRQ | **Not Used** | — |
 
 ---
