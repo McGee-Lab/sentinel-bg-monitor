@@ -14,7 +14,8 @@ Sentinel is a personal blood glucose (BG) monitoring and alert system built for 
 
 It uses the Nightscout API to retrieve Dexcom or Libre data and provides local display and alerts via embedded hardware.
 
-> Sentinel prioritizes a **local-first interface**, **explicit network dependency**, and **clarity over complexity**.
+Sentinel prioritizes a **local-first interface**, **explicit network dependency**, and **clarity over complexity**.
+
 > ⚠️ This is a personal project and **not a medical device**.
 
 ---
