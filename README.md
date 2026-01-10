@@ -1,5 +1,14 @@
 # Sentinel BG Monitor
 
+[![ESP32](https://img.shields.io/badge/ESP32-Microcontroller-informational)](https://www.espressif.com/en/products/socs/esp32)
+[![Arduino](https://img.shields.io/badge/Arduino-Compatible-informational)](https://www.arduino.cc/)
+[![C++](https://img.shields.io/badge/C%2B%2B-Firmware-informational)](https://isocpp.org/)
+[![PlatformIO](https://img.shields.io/badge/PlatformIO-Recommended-informational)](https://platformio.org/)
+[![TFT](https://img.shields.io/badge/TFT-Display-informational)](https://en.wikipedia.org/wiki/Thin-film_transistor)
+[![ILI9488](https://img.shields.io/badge/ILI9488-Display%20Driver-informational)](https://www.displayfuture.com/Display/datasheet/controller/ILI9488.pdf)
+[![WiFi](https://img.shields.io/badge/WiFi-Enabled-informational)](https://en.wikipedia.org/wiki/Wi-Fi)
+[![API](https://img.shields.io/badge/API-Nightscout%20Compatible-informational)](https://nightscout.github.io/)
+
 Sentinel is a personal blood glucose (BG) monitoring and alert system built for Type 1 Diabetes care.
 
 It uses the Nightscout API to retrieve Dexcom or Libre data and provides local display and alerts via embedded hardware.
