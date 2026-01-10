@@ -1,5 +1,6 @@
 # Sentinel BG Monitor
 
+[![License](https://img.shields.io/github/license/McGee-Lab/sentinel-bg-monitor)](LICENSE)
 [![ESP32](https://img.shields.io/badge/ESP32-Microcontroller-informational)](https://www.espressif.com/en/products/socs/esp32)
 [![Arduino](https://img.shields.io/badge/Arduino-Compatible-informational)](https://www.arduino.cc/)
 [![C++](https://img.shields.io/badge/C%2B%2B-Firmware-informational)](https://isocpp.org/)
@@ -13,6 +14,7 @@ Sentinel is a personal blood glucose (BG) monitoring and alert system built for 
 
 It uses the Nightscout API to retrieve Dexcom or Libre data and provides local display and alerts via embedded hardware.
 
+> Sentinel prioritizes a **local-first interface**, **explicit network dependency**, and **clarity over complexity**.
 > ⚠️ This is a personal project and **not a medical device**.
 
 ---
@@ -23,6 +25,45 @@ It uses the Nightscout API to retrieve Dexcom or Libre data and provides local d
 - High / Low BG alerts
 - Offline-safe behavior
 - Configurable thresholds
+- Simple Screen Layout with Info
+- Simple Alerts
+- 3-5 Preset Themes
+- Touchscreen Optional Version
+
+## Current Prototype Status
+- ⏳ TFT display wiring in progress
+- ❌ Audio output not wired
+- ❌ Buttons not wired
+- ❌ Nightscout polling not implemented
+
+## Next Steps
+- Solder display to ESP32 and test
+- Solder speaker + amp to ESP32 and test
+- Solder buttons to ESP32 and test
+- Implement Nightscout polling + parsing
+- Add alert logic (high / low thresholds)
+- Initial UI layout
+
+---
+
+## Getting Started (WIP)
+- Install PlatformIO in VS Code
+- Copy `config.example.h` → `config.h`
+- Fill in Nightscout URL + API token
+- Build & upload to ESP32
+
+---
+
+## Secrets
+- `config.h` is ignored by git
+- Use `config.example.h` as a template
+
+---
+
+## Security
+- All credentials are stored locally
+- Secrets are excluded from source control
+- Example configuration files are provided
 
 ---
 
@@ -31,7 +72,7 @@ It uses the Nightscout API to retrieve Dexcom or Libre data and provides local d
 - Nightscout REST API
 - Dexcom G7 (via Nightscout)
 - Local TFT display + audio alerts
-- Libre (via Nightscout) *Not used here but can be setup on Nightcount*
+- Libre (via Nightscout) *(not used here, but can be set up via Nightscout)*
 
 ---
 
@@ -41,26 +82,21 @@ The current Sentinel prototype uses the following hardware components.
 
 ### Core Components
 - **ESP32 Dev Board**  
-  -ESP-WROOM-32 ESP32 ESP-32S (WiFi + Bluetooth)
-     - https://a.co/d/jlhULrt
+  - [ESP-WROOM-32 Dev Board (Amazon)](https://a.co/d/jlhULrt)
 
 - **TFT Display + Touch**
-  - Hosyond 3.5" TFT LCD Touch Screen  
+  - [Hosyond 3.5" TFT LCD Touch Screen](https://a.co/d/iaZIYXb)  
      - Resolution: 480×320  
      - Driver: ILI9488 (SPI)
-     - https://a.co/d/iaZIYXb
 
 - **Audio Output**
-  - Teyleten Robot MAX98357 I2S 3W Class-D Audio Amplifier
-     - https://a.co/d/8e25bS1
-  - DWEII 3W 8Ω Mini Speaker (JST-PH 2.0)
-     - https://a.co/d/5FKaton
+  - [Teyleten Robot MAX98357 I2S 3W Class-D Audio Amplifier](https://a.co/d/8e25bS1)
+  - [DWEII 3W 8Ω Mini Speaker (JST-PH 2.0)](https://a.co/d/5FKaton)
 
 - **Inputs**
-  - Waterproof 12mm momentary push buttons
-     - https://a.co/d/51VKgty
+  - [Waterproof 12mm momentary push buttons](https://a.co/d/51VKgty)
 
-  ---
+---
 
 ## Enclosure (Planned)
 
@@ -105,7 +141,6 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 | GND | MAX98357 GND | Black |
 | GND | MAX98357 SD (Shutdown) | Black |
 
----
 
 ### TFT Display (SPI)
 | ESP32 Pin | TFT Pin | Function | Wire Color |
@@ -117,7 +152,6 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 | GPIO 23 | MOSI | SPI Data | Blue |
 | — | MISO | **Not Used** | — |
 
----
 
 ### Touch Controller (SPI) (Currently not wired/not being used)
 | ESP32 Pin | Touch Pin | Function | Wire Color |
@@ -128,7 +162,6 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 | GPIO 33 | TOUCH_CS | Chip Select | Brown |
 | — | IRQ | **Not Used** | — |
 
----
 
 ### Audio (I2S – MAX98357)
 | ESP32 Pin | MAX98357 Pin | Function | Wire Color |
@@ -139,7 +172,6 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 
 The speaker connects directly to the MAX98357 output terminals.
 
----
 
 ### Buttons (Internal Pull-Ups Enabled)
 | ESP32 Pin | Button | Purpose | Wiring |
@@ -150,18 +182,8 @@ The speaker connects directly to the MAX98357 output terminals.
 Buttons use the ESP32’s internal pull-up resistors.  
 Pressed = **LOW**, Released = **HIGH**.
 
----
-
-## Security
-- All credentials are stored locally
-- Secrets are excluded from source control
-- Example configuration files are provided
 
 ---
 
-## Status
-🚧 In active development
-
----
 
 Built with care.
