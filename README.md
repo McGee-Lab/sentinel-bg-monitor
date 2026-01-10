@@ -10,11 +10,9 @@
 [![WiFi](https://img.shields.io/badge/WiFi-Enabled-informational)](https://en.wikipedia.org/wiki/Wi-Fi)
 [![API](https://img.shields.io/badge/API-Nightscout%20Compatible-informational)](https://nightscout.github.io/)
 
-Sentinel is a personal blood glucose (BG) monitoring and alert system built for Type 1 Diabetes care.
+Sentinel is a personal blood glucose (BG) monitoring and alert system built for Type 1 Diabetes care. It uses the Nightscout API to retrieve Dexcom or Libre data and provides local display and alerts via embedded hardware.
 
-It uses the Nightscout API to retrieve Dexcom or Libre data and provides local display and alerts via embedded hardware.
-
-Sentinel prioritizes a **local-first interface**, **explicit network dependency**, and **clarity over complexity**.
+Sentinel prioritizes **local reliability**, **clear failure states**, and **clarity over complexity**.
 
 > ⚠️ This is a personal project and **not a medical device**.
 
