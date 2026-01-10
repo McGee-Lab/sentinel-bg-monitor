@@ -2,7 +2,7 @@
 
 Sentinel is a personal blood glucose (BG) monitoring and alert system built for Type 1 Diabetes care.
 
-It uses the Nightscout API to retrieve Dexcom G7 data and provides local display and alerts via embedded hardware.
+It uses the Nightscout API to retrieve Dexcom or Libre data and provides local display and alerts via embedded hardware.
 
 > ⚠️ This is a personal project and **not a medical device**.
 
@@ -22,6 +22,7 @@ It uses the Nightscout API to retrieve Dexcom G7 data and provides local display
 - Nightscout REST API
 - Dexcom G7 (via Nightscout)
 - Local TFT display + audio alerts
+- Libre (via Nightscout) *Not used here but can be setup on Nightcount*
 
 ---
 
@@ -32,23 +33,23 @@ The current Sentinel prototype uses the following hardware components.
 ### Core Components
 - **ESP32 Dev Board**  
   -ESP-WROOM-32 ESP32 ESP-32S (WiFi + Bluetooth)
-    https://a.co/d/jlhULrt
+     - https://a.co/d/jlhULrt
 
 - **TFT Display + Touch**
   - Hosyond 3.5" TFT LCD Touch Screen  
-    Resolution: 480×320  
-    Driver: ILI9488 (SPI)
-    https://a.co/d/iaZIYXb
+     - Resolution: 480×320  
+     - Driver: ILI9488 (SPI)
+     - https://a.co/d/iaZIYXb
 
 - **Audio Output**
   - Teyleten Robot MAX98357 I2S 3W Class-D Audio Amplifier
-    https://a.co/d/8e25bS1
+     - https://a.co/d/8e25bS1
   - DWEII 3W 8Ω Mini Speaker (JST-PH 2.0)
-    https://a.co/d/5FKaton
+     - https://a.co/d/5FKaton
 
 - **Inputs**
   - Waterproof 12mm momentary push buttons
-    https://a.co/d/51VKgty
+     - https://a.co/d/51VKgty
 
   ---
 
