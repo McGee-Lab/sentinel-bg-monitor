@@ -54,19 +54,19 @@ namespace Nightscout {
     applyAuthHeaders(http);
 
     int code = http.GET();
-    if (code == 200) {
-      // JSON is an array with one object: [{ "sgv": 123, ... }]
-      String payload = http.getString();
+      if (code == 200) {
+        // JSON is an array with one object: [{ "sgv": 123, ... }]
+        String payload = http.getString();
 
-      StaticJsonDocument<1024> doc;
-      DeserializationError err = deserializeJson(doc, payload);
-      if (!err && doc.is<JsonArray>() && doc.size() > 0) {
-        JsonObject obj = doc[0];
-        if (obj.containsKey("sgv")) {
-          s_sgv = obj["sgv"].as<int>();
-          s_lastUpdateMs = now;
+        JsonDocument doc;
+        DeserializationError err = deserializeJson(doc, payload);
+        if (!err && doc.is<JsonArray>() && doc.size() > 0) {
+          JsonObject obj = doc[0];
+          if (obj["sgv"].is<int>()) {
+            s_sgv = obj["sgv"].as<int>();
+            s_lastUpdateMs = now;
+          }
         }
-      }
     }
 
     http.end();
