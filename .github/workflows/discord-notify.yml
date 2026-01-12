@@ -2,33 +2,34 @@ name: Discord Notify
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, dev]
   release:
     types: [published]
   pull_request:
     types: [closed]
+  workflow_dispatch:
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Discord notification
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      - name: Build message
+        id: msg
         run: |
+          set -euo pipefail
+
           EVENT_NAME="${{ github.event_name }}"
           REPO="${{ github.repository }}"
           ACTOR="${{ github.actor }}"
-          URL="${{ github.server_url }}/${{ github.repository }}"
+          BASE_URL="${{ github.server_url }}/${{ github.repository }}"
+
+          CONTENT=""
 
           if [ "$EVENT_NAME" = "push" ]; then
             BRANCH="${{ github.ref_name }}"
             COMMIT="${{ github.sha }}"
-            SHORT="${COMMIT:0:7}"
             MSG="${{ github.event.head_commit.message }}"
-            CONTENT="📌 **${REPO}**: new push to **${BRANCH}** by **${ACTOR}**\n> ${MSG}\n🔗 ${URL}/commit/${COMMIT}"
+            CONTENT="📌 **${REPO}**: push to **${BRANCH}** by **${ACTOR}**\n> ${MSG}\n🔗 ${BASE_URL}/commit/${COMMIT}"
           fi
 
           if [ "$EVENT_NAME" = "release" ]; then
@@ -46,12 +47,41 @@ jobs:
               PRURL="${{ github.event.pull_request.html_url }}"
               CONTENT="✅ **${REPO}**: PR **#${PRNUM}** merged by **${ACTOR}**\n**${TITLE}**\n🔗 ${PRURL}"
             else
-              # closed but not merged — do nothing
+              echo "PR closed but not merged — skipping."
               exit 0
             fi
           fi
 
-          curl -H "Content-Type: application/json" \
-               -X POST \
-               -d "{\"content\":\"$CONTENT\"}" \
-               "$DISCORD_WEBHOOK_URL"
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          CONTENT: ${{ steps.msg.outputs.content }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
+            echo "Missing DISCORD_WEBHOOK_URL secret."
+            exit 1
+          fi
+
+          JSON=$(jq -n --arg content "$CONTENT" '{content: $content}')
+          echo "Posting payload:"
+          echo "$JSON"
+
+          HTTP_CODE=$(curl -sS -o /tmp/discord_resp.txt -w "%{http_code}" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d "$JSON" \
+            "$DISCORD_WEBHOOK_URL")
+
+          echo "Discord HTTP status: $HTTP_CODE"
+          echo "Discord response:"
+          cat /tmp/discord_resp.txt || true
+
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            exit 1
+          fi
