@@ -29,23 +29,21 @@ jobs:
             BRANCH="${{ github.ref_name }}"
             COMMIT="${{ github.sha }}"
             MSG="${{ github.event.head_commit.message }}"
-            CONTENT="📌 **${REPO}**: push to **${BRANCH}** by **${ACTOR}**\n> ${MSG}"
+            CONTENT="📌 Push to ${BRANCH}\n> ${MSG}"
           fi
 
           if [ "$EVENT_NAME" = "release" ]; then
-            TAG="${{ github.event.release.tag_name }}"
-            NAME="${{ github.event.release.name }}"
-            RELURL="${{ github.event.release.html_url }}"
-            CONTENT="🚀 **${REPO}**: **Release published**\n**${NAME}** (${TAG})\n🔗 ${RELURL}"
+          TAG="${{ github.event.release.tag_name }}"
+          NAME="${{ github.event.release.name }}"
+          CONTENT="🚀 Release published\n**${NAME}** (${TAG})"
           fi
-
+          
           if [ "$EVENT_NAME" = "pull_request" ]; then
             MERGED="${{ github.event.pull_request.merged }}"
             if [ "$MERGED" = "true" ]; then
               PRNUM="${{ github.event.pull_request.number }}"
               TITLE="${{ github.event.pull_request.title }}"
-              PRURL="${{ github.event.pull_request.html_url }}"
-              CONTENT="✅ **${REPO}**: PR **#${PRNUM}** merged by **${ACTOR}**\n**${TITLE}**\n🔗 ${PRURL}"
+              CONTENT="✅ PR #${PRNUM} merged\n**${TITLE}**"
             else
               echo "PR closed but not merged — skipping."
               exit 0
@@ -67,17 +65,38 @@ jobs:
         run: |
           set -euo pipefail
 
-          TITLE="GitHub Update"
-          COLOR=5814783
+          # Repo-based emoji + color
+          case "$REPO" in
+            McGeeLabs/sentinel-bg-monitor)
+              BADGE="📟"
+              COLOR=3111081 ;; # medical teal
+            McGeeLabs/NebulaNode)
+              BADGE="⚙️"
+              COLOR=5793266 ;; # infra blue
+            McGeeLabs/NexaBot)
+              BADGE="🤖"
+              COLOR=10070709 ;; # automation purple
+            McGeeLabs/NebulaNest)
+              BADGE="🧠"
+              COLOR=15105570 ;; # orchestration violet
+            *)
+              BADGE="📦"
+              COLOR=5814783 ;; # default gray-blue
+          esac
+
+          TITLE="${BADGE} GitHub Update"
 
           TARGET_URL="$URL"
 
           if [ "$EVENT" = "push" ]; then
             TARGET_URL="$URL/commit/${{ github.sha }}"
+            TITLE="${BADGE} Push to ${REPO##*/}"
           elif [ "$EVENT" = "release" ]; then
             TARGET_URL="${{ github.event.release.html_url }}"
+            TITLE="${BADGE} New Release"
           elif [ "$EVENT" = "pull_request" ]; then
             TARGET_URL="${{ github.event.pull_request.html_url }}"
+            TITLE="${BADGE} Pull Request Merged"
           fi
 
           JSON=$(jq -n \
