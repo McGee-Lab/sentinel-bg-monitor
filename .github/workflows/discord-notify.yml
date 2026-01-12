@@ -29,7 +29,7 @@ jobs:
             BRANCH="${{ github.ref_name }}"
             COMMIT="${{ github.sha }}"
             MSG="${{ github.event.head_commit.message }}"
-            CONTENT="📌 **${REPO}**: push to **${BRANCH}** by **${ACTOR}**\n> ${MSG}\n🔗 ${BASE_URL}/commit/${COMMIT}"
+            CONTENT="📌 **${REPO}**: push to **${BRANCH}** by **${ACTOR}**\n> ${MSG}"
           fi
 
           if [ "$EVENT_NAME" = "release" ]; then
@@ -70,31 +70,31 @@ jobs:
           TITLE="GitHub Update"
           COLOR=5814783
 
+          TARGET_URL="$URL"
+
           if [ "$EVENT" = "push" ]; then
-            TITLE="📌 Push to ${REPO}"
+            TARGET_URL="$URL/commit/${{ github.sha }}"
           elif [ "$EVENT" = "release" ]; then
-            TITLE="🚀 New Release"
-            COLOR=3066993
+            TARGET_URL="${{ github.event.release.html_url }}"
           elif [ "$EVENT" = "pull_request" ]; then
-            TITLE="✅ Pull Request Merged"
-            COLOR=15105570
+            TARGET_URL="${{ github.event.pull_request.html_url }}"
           fi
 
           JSON=$(jq -n \
-            --arg title "$TITLE" \
-            --arg desc "$CONTENT" \
-            --arg url "$URL" \
-            --arg footer "by $ACTOR" \
-            --argjson color "$COLOR" \
-            '{
-              embeds: [{
-                title: $title,
-                description: $desc,
-                url: $url,
-                color: $color,
-                footer: { text: $footer }
-              }]
-            }')
+          --arg title "$TITLE" \
+          --arg desc "$CONTENT" \
+          --arg url "$TARGET_URL" \
+          --arg footer "by $ACTOR" \
+          --argjson color "$COLOR" \
+          '{
+            embeds: [{
+              title: $title,
+              url: $url,
+              description: $desc,
+              color: $color,
+              footer: { text: $footer }
+            }]
+          }')
 
           echo "Posting payload:"
           echo "$JSON"
