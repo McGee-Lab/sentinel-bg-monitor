@@ -6,3 +6,4 @@
 # Local secrets
 include/config.h
 secrets/
+platformio.ini

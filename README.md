@@ -1,86 +1,150 @@
 # Sentinel BG Monitor
 
-Sentinel is a personal blood glucose (BG) monitoring and alert system built for Type 1 Diabetes care.
+[![License](https://img.shields.io/github/license/McGee-Lab/sentinel-bg-monitor)](LICENSE)
+[![ESP32](https://img.shields.io/badge/ESP32-Microcontroller-informational)](https://www.espressif.com/en/products/socs/esp32)
+[![Arduino](https://img.shields.io/badge/Arduino-Compatible-informational)](https://www.arduino.cc/)
+[![C++](https://img.shields.io/badge/C%2B%2B-Firmware-informational)](https://isocpp.org/)
+[![PlatformIO](https://img.shields.io/badge/PlatformIO-Recommended-informational)](https://platformio.org/)
+[![TFT](https://img.shields.io/badge/TFT-Display-informational)](https://en.wikipedia.org/wiki/Thin-film_transistor)
+[![ILI9488](https://img.shields.io/badge/ILI9488-Display%20Driver-informational)](https://www.displayfuture.com/Display/datasheet/controller/ILI9488.pdf)
+[![WiFi](https://img.shields.io/badge/WiFi-Enabled-informational)](https://en.wikipedia.org/wiki/Wi-Fi)
+[![API](https://img.shields.io/badge/API-Nightscout%20Compatible-informational)](https://nightscout.github.io/)
 
-It uses the Nightscout API to retrieve Dexcom or Libre data and provides local display and alerts via embedded hardware.
+**Sentinel** is a personal blood glucose (BG) monitoring and alert system built for Type 1 Diabetes care.  
+It retrieves data from **Nightscout** and presents it locally on dedicated hardware with clear visual and audio alerts.
 
-> ⚠️ This is a personal project and **not a medical device**.
+Sentinel prioritizes:
+
+- Local reliability
+- Clear failure states
+- Clarity over complexity
+- No phone dependency for visibility
+
+> ⚠️ **This is a personal project and is NOT a medical device.**  
+> It is provided for educational and personal use only.
 
 ---
 
-## Features (Planned)
-- Nightscout API integration
+## Current Release
+
+### 🧪 V0.1.0 – Hardware & Framework Baseline
+
+This release establishes a stable hardware and firmware foundation:
+
+- Display, audio, buttons, WiFi, and system structure are functional
+- Modular firmware architecture is in place
+- Intended for hardware bring-up, testing, and learning
+- No Nightscout polling yet (next milestone)
+
+This version is **not intended for daily medical use**.
+
+---
+
+## Features
+
+### Implemented (V0.1.0)
+- Modular firmware architecture
+- TFT display initialization & placeholder UI
+- Audio output via I2S (MAX98357)
+- Button input with debounce
+- Hardware test mode
+- WiFi subsystem scaffold
+- Clean boot sequence
+- Touchscreen wired but intentionally unused
+
+### Planned / In Progress
+- Nightscout API polling
 - Real-time BG display
-- High / Low BG alerts
+- Trend arrows and delta display
+- High / low BG alerts (audio + visual)
 - Offline-safe behavior
 - Configurable thresholds
+- Simple UI layouts
+- Preset visual and audio themes
+- Optional touchscreen interaction
+
+---
+
+## Project Status
+
+This project is in **active development**.
+
+The current focus is:
+1. Reliable Nightscout data ingestion
+2. Clear on-device presentation
+3. Maintainable, understandable firmware
+
+This is intentionally a learning-focused and iterative project.
+
+---
+
+## Getting Started (WIP)
+
+1. Install **PlatformIO** in VS Code
+2. Clone the repository
+3. Copy: example.platformio.ini and rename to platformio.ini
+4. Edit `platformio.ini` and fill in:
+- WiFi SSID
+- WiFi password
+- Nightscout URL
+- Nightscout API token
+5. Build and upload to the ESP32
+
+> `platformio.ini` is ignored by git to prevent secrets from being committed.
+
+---
+
+## Security & Secrets
+
+- Secrets are provided via PlatformIO build flags
+- Credentials are not stored in source files
+- `platformio.ini` should not be committed with real credentials
+- No secrets are hard-coded in firmware
 
 ---
 
 ## Tech Stack
+
 - ESP32 (Arduino framework)
+- PlatformIO
 - Nightscout REST API
 - Dexcom G7 (via Nightscout)
-- Local TFT display + audio alerts
-- Libre (via Nightscout) *Not used here but can be setup on Nightcount*
+- TFT display (ILI9488)
+- I2S audio alerts (MAX98357)
 
 ---
 
 ## Hardware Used
 
-The current Sentinel prototype uses the following hardware components.
-
 ### Core Components
-- **ESP32 Dev Board**  
-  -ESP-WROOM-32 ESP32 ESP-32S (WiFi + Bluetooth)
-     - https://a.co/d/jlhULrt
+- **ESP32 Dev Board**
+- ESP-WROOM-32
 
-- **TFT Display + Touch**
-  - Hosyond 3.5" TFT LCD Touch Screen  
-     - Resolution: 480×320  
-     - Driver: ILI9488 (SPI)
-     - https://a.co/d/iaZIYXb
+- **TFT Display**
+- 3.5" 480×320 SPI TFT
+- ILI9488 driver
 
-- **Audio Output**
-  - Teyleten Robot MAX98357 I2S 3W Class-D Audio Amplifier
-     - https://a.co/d/8e25bS1
-  - DWEII 3W 8Ω Mini Speaker (JST-PH 2.0)
-     - https://a.co/d/5FKaton
+- **Audio**
+- MAX98357 I2S Class-D amplifier
+- 3W 8Ω speaker
 
 - **Inputs**
-  - Waterproof 12mm momentary push buttons
-     - https://a.co/d/51VKgty
+- Two momentary push buttons (Snooze / Mute)
 
-  ---
+---
 
 ## Enclosure (Planned)
 
-Sentinel will include a custom 3D-printed enclosure designed to house all electronics securely and safely.
+A custom 3D-printed enclosure is planned with:
 
-### Enclosure Goals
-- Desk or nightstand friendly form factor
-- Front-mounted TFT display
-- Accessible buttons (Snooze / Mute)
-- Rear or bottom audio vents
-- Passive airflow for ESP32 cooling
-- Easy access for firmware updates (USB)
+- Desk or nightstand-friendly form factor
+- Front-mounted display
+- Accessible buttons
+- Rear or bottom speaker vents
+- Passive airflow
+- USB access for firmware updates
 
-### Design Approach
-- CAD designed specifically for the selected hardware
-- Modular shell (front + back or clamshell)
-- Mounting points for:
-  - ESP32 dev board
-  - TFT display
-  - MAX98357 amplifier
-  - Speaker
-- No glue required (screws or snap-fit where possible)
-
-### 3D Printing
-- Designed for FDM printers
-- PLA for early prototypes
-- PETG recommended for final prints
-
-> Enclosure files will be included in this repository once the design stabilizes.
+Enclosure files will be added once the design stabilizes.
 
 ---
 
@@ -94,9 +158,6 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 | GND | TFT GND | Black |
 | 5V | MAX98357 VIN | Red |
 | GND | MAX98357 GND | Black |
-| GND | MAX98357 SD (Shutdown) | Black |
-
----
 
 ### TFT Display (SPI)
 | ESP32 Pin | TFT Pin | Function | Wire Color |
@@ -106,20 +167,16 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 | GPIO 15 | CS | Chip Select | Brown |
 | GPIO 18 | SCK | SPI Clock | Yellow |
 | GPIO 23 | MOSI | SPI Data | Blue |
-| — | MISO | **Not Used** | — |
+| — | MISO | Not Used | — |
 
----
-
-### Touch Controller (SPI) (Currently not wired/not being used)
+### Touch Controller (SPI)
 | ESP32 Pin | Touch Pin | Function | Wire Color |
 |---------|-----------|---------|-----------|
 | GPIO 18 | TOUCH_CLK | SPI Clock | Yellow |
 | GPIO 19 | TOUCH_DO | Data Out | Green |
 | GPIO 23 | TOUCH_DIN | Data In | Blue |
 | GPIO 33 | TOUCH_CS | Chip Select | Brown |
-| — | IRQ | **Not Used** | — |
-
----
+| — | IRQ | Not Used | — |
 
 ### Audio (I2S – MAX98357)
 | ESP32 Pin | MAX98357 Pin | Function | Wire Color |
@@ -127,10 +184,9 @@ Sentinel will include a custom 3D-printed enclosure designed to house all electr
 | GPIO 26 | BCLK | Bit Clock | Gray |
 | GPIO 25 | LRC | Left/Right Clock | Purple |
 | GPIO 22 | DIN | Audio Data | White |
+| GPIO 21 | SD (Shutdown / Enable) | Orange |
 
 The speaker connects directly to the MAX98357 output terminals.
-
----
 
 ### Buttons (Internal Pull-Ups Enabled)
 | ESP32 Pin | Button | Purpose | Wiring |
@@ -138,21 +194,21 @@ The speaker connects directly to the MAX98357 output terminals.
 | GPIO 32 | Yellow Button | Snooze | Button → GND |
 | GPIO 27 | Red Button | Mute | Button → GND |
 
-Buttons use the ESP32’s internal pull-up resistors.  
-Pressed = **LOW**, Released = **HIGH**.
+Pressed = LOW  
+Released = HIGH
 
 ---
 
-## Security
-- All credentials are stored locally
-- Secrets are excluded from source control
-- Example configuration files are provided
+## Roadmap (Short-Term)
+
+- [ ] Implement Nightscout polling module
+- [ ] Parse and cache BG data
+- [ ] Display current BG and timestamp
+- [ ] Add alert thresholds
+- [ ] First usable on-device screen
 
 ---
 
-## Status
-🚧 In active development
-
----
-
-Built with care.
+Built with care.  
+Learning-focused.  
+Not a medical device.
