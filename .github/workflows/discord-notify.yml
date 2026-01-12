@@ -1,0 +1,57 @@
+name: Discord Notify
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  release:
+    types: [published]
+  pull_request:
+    types: [closed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          EVENT_NAME="${{ github.event_name }}"
+          REPO="${{ github.repository }}"
+          ACTOR="${{ github.actor }}"
+          URL="${{ github.server_url }}/${{ github.repository }}"
+
+          if [ "$EVENT_NAME" = "push" ]; then
+            BRANCH="${{ github.ref_name }}"
+            COMMIT="${{ github.sha }}"
+            SHORT="${COMMIT:0:7}"
+            MSG="${{ github.event.head_commit.message }}"
+            CONTENT="📌 **${REPO}**: new push to **${BRANCH}** by **${ACTOR}**\n> ${MSG}\n🔗 ${URL}/commit/${COMMIT}"
+          fi
+
+          if [ "$EVENT_NAME" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+            NAME="${{ github.event.release.name }}"
+            RELURL="${{ github.event.release.html_url }}"
+            CONTENT="🚀 **${REPO}**: **Release published**\n**${NAME}** (${TAG})\n🔗 ${RELURL}"
+          fi
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            MERGED="${{ github.event.pull_request.merged }}"
+            if [ "$MERGED" = "true" ]; then
+              PRNUM="${{ github.event.pull_request.number }}"
+              TITLE="${{ github.event.pull_request.title }}"
+              PRURL="${{ github.event.pull_request.html_url }}"
+              CONTENT="✅ **${REPO}**: PR **#${PRNUM}** merged by **${ACTOR}**\n**${TITLE}**\n🔗 ${PRURL}"
+            else
+              # closed but not merged — do nothing
+              exit 0
+            fi
+          fi
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\":\"$CONTENT\"}" \
+               "$DISCORD_WEBHOOK_URL"
