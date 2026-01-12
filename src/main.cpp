@@ -17,6 +17,9 @@
 // Test
 #include "test/hardwareTest.h"
 
+// Version
+#include "system/version.h"
+
 // =======================
 // GLOBAL OBJECTS
 // =======================
@@ -35,8 +38,9 @@ constexpr int AMP_SD_PIN = 21;
 // =======================
 void setup() {
   Serial.begin(115200);
-  delay(200);
-
+  delay(500);
+  Serial.printf("Sentinel %s\n", SENTINEL_VERSION_TAG);
+  delay(500);
   Serial.printf("Reset reason: %d\n", (int)esp_reset_reason());
 
   // Amp enable pin
