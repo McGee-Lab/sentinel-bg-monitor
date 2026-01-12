@@ -48,3 +48,5 @@ This project follows a simple versioning scheme during early development:
 - High and low BG alerts (audio and visual)
 - Offline and error states
 - UI layout iterations
+
+[0.1.0]: https://github.com/McGee-Lab/sentinel-bg-monitor/releases/tag/v0.1.0
