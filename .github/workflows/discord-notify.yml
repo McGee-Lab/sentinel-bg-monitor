@@ -56,27 +56,50 @@ jobs:
           echo -e "$CONTENT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Send to Discord
+            - name: Send to Discord
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           CONTENT: ${{ steps.msg.outputs.content }}
+          REPO: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          EVENT: ${{ github.event_name }}
+          URL: ${{ github.server_url }}/${{ github.repository }}
         run: |
           set -euo pipefail
 
-          if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
-            echo "Missing DISCORD_WEBHOOK_URL secret."
-            exit 1
+          TITLE="GitHub Update"
+          COLOR=5814783 # muted blue-gray
+
+          if [ "$EVENT" = "push" ]; then
+            TITLE="📌 Push to ${REPO}"
+          elif [ "$EVENT" = "release" ]; then
+            TITLE="🚀 New Release"
+            COLOR=3066993 # green
+          elif [ "$EVENT" = "pull_request" ]; then
+            TITLE="✅ Pull Request Merged"
+            COLOR=15105570 # purple
           fi
 
-          JSON=$(jq -n --arg content "$CONTENT" '{content: $content}')
-          echo "Posting payload:"
-          echo "$JSON"
+          JSON=$(jq -n \
+            --arg title "$TITLE" \
+            --arg desc "$CONTENT" \
+            --arg url "$URL" \
+            --arg footer "by $ACTOR" \
+            --argjson color "$COLOR" \
+            '{
+              embeds: [{
+                title: $title,
+                description: $desc,
+                url: $url,
+                color: $color,
+                footer: { text: $footer }
+              }]
+            }')
 
-          HTTP_CODE=$(curl -sS -o /tmp/discord_resp.txt -w "%{http_code}" \
-            -H "Content-Type: application/json" \
+          curl -sS -H "Content-Type: application/json" \
             -X POST \
             -d "$JSON" \
-            "$DISCORD_WEBHOOK_URL")
+            "$DISCORD_WEBHOOK_URL"
 
           echo "Discord HTTP status: $HTTP_CODE"
           echo "Discord response:"
