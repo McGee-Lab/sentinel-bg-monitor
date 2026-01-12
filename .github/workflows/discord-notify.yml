@@ -52,11 +52,11 @@ jobs:
             fi
           fi
 
-          echo "content<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$CONTENT" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "content<<EOF" >> "$GITHUB_OUTPUT"
+          echo -e "$CONTENT" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
-            - name: Send to Discord
+      - name: Send to Discord (embed-only)
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           CONTENT: ${{ steps.msg.outputs.content }}
@@ -68,16 +68,16 @@ jobs:
           set -euo pipefail
 
           TITLE="GitHub Update"
-          COLOR=5814783 # muted blue-gray
+          COLOR=5814783
 
           if [ "$EVENT" = "push" ]; then
             TITLE="📌 Push to ${REPO}"
           elif [ "$EVENT" = "release" ]; then
             TITLE="🚀 New Release"
-            COLOR=3066993 # green
+            COLOR=3066993
           elif [ "$EVENT" = "pull_request" ]; then
             TITLE="✅ Pull Request Merged"
-            COLOR=15105570 # purple
+            COLOR=15105570
           fi
 
           JSON=$(jq -n \
@@ -96,10 +96,14 @@ jobs:
               }]
             }')
 
-          curl -sS -H "Content-Type: application/json" \
+          echo "Posting payload:"
+          echo "$JSON"
+
+          HTTP_CODE=$(curl -sS -o /tmp/discord_resp.txt -w "%{http_code}" \
+            -H "Content-Type: application/json" \
             -X POST \
             -d "$JSON" \
-            "$DISCORD_WEBHOOK_URL"
+            "$DISCORD_WEBHOOK_URL")
 
           echo "Discord HTTP status: $HTTP_CODE"
           echo "Discord response:"
