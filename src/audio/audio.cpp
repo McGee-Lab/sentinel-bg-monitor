@@ -7,10 +7,10 @@
 #include "system/settings_pins.h"
 #include "system/settings_audio.h"
 
-// If PI isn't defined in your environment for some reason, keep this.
 #ifndef PI
   #define PI 3.14159265358979323846
 #endif
+
 
 namespace AudioOut {
 
@@ -18,26 +18,33 @@ namespace AudioOut {
   static int16_t s_stereoBuf[Audio::FRAMES_PER_BUFFER * 2];
 
   static void setupI2S() {
-    i2s_config_t cfg = {
-      .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX),
-      .sample_rate = Audio::SAMPLE_RATE,
-      .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-      .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
+    i2s_config_t cfg = {};
+    cfg.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX);
+    cfg.sample_rate = Audio::SAMPLE_RATE;
+    cfg.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT;
+    cfg.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT;
 
-      // Avoid deprecated warning on newer cores, keep compatibility on older cores
-#if defined(I2S_COMM_FORMAT_STAND_I2S)
-      .communication_format = I2S_COMM_FORMAT_STAND_I2S,
-#else
-      .communication_format = I2S_COMM_FORMAT_I2S,
-#endif
+  #if defined(I2S_COMM_FORMAT_STAND_I2S)
+    cfg.communication_format = I2S_COMM_FORMAT_STAND_I2S;
+  #else
+    #if defined(__GNUC__)
+      #pragma GCC diagnostic push
+      #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    #endif
 
-      .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-      .dma_buf_count = Audio::DMA_BUF_COUNT,
-      .dma_buf_len   = Audio::FRAMES_PER_BUFFER,
-      .use_apll = false,
-      .tx_desc_auto_clear = true,
-      .fixed_mclk = 0
-    };
+    cfg.communication_format = I2S_COMM_FORMAT_I2S;
+
+    #if defined(__GNUC__)
+      #pragma GCC diagnostic pop
+    #endif
+  #endif
+
+    cfg.intr_alloc_flags = ESP_INTR_FLAG_LEVEL1;
+    cfg.dma_buf_count = Audio::DMA_BUF_COUNT;
+    cfg.dma_buf_len = Audio::FRAMES_PER_BUFFER;
+    cfg.use_apll = false;
+    cfg.tx_desc_auto_clear = true;
+    cfg.fixed_mclk = 0;
 
     i2s_pin_config_t pins = {};
     pins.bck_io_num   = Pins::I2S_BCLK;

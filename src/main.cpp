@@ -3,6 +3,9 @@
 #include <XPT2046_Touchscreen.h>
 #include "esp_system.h"
 
+// Nightscout
+#include "nightscout/nightscout.h"
+
 // Subsystems
 #include "audio/audio.h"
 #include "input/buttons.h"
@@ -52,6 +55,7 @@ void setup() {
   Display::begin();
   AudioOut::begin();               // installs I2S driver
   WiFiMgr::begin();
+  Nightscout::begin();
 
   // Now enable amp (reduces pops/crackle)
   digitalWrite(AMP_SD_PIN, HIGH);
