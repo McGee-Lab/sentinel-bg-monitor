@@ -8,3 +8,5 @@ include/config.h
 secrets/
 platformio.ini
 .env
+# MCP / Copilot local config
+**/mcp.json
