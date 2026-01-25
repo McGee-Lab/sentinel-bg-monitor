@@ -13,4 +13,7 @@ namespace AudioOut {
   void playBtn1Sound();
   void playBtn2Sound();
 
+  // BG Sound Alerts
+  void playHighAlert();
+
 } // namespace AudioOut

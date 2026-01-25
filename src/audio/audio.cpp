@@ -113,4 +113,20 @@ namespace AudioOut {
     playBeepPattern(notes, dur, 2, 40);
   }
 
+
+  // High Sound Alert
+  void playHighAlert() {
+    static const float notes[] = {
+      1200.0f,
+      1200.0f
+    };
+
+    static const uint16_t dur[] = {
+      120,
+      120
+    };
+
+    playBeepPattern(notes, dur, 2, 80);
+  }
+
 } // namespace AudioOut
